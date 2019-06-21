@@ -1,0 +1,170 @@
+body, div, h1, form, fieldset, input{
+	margin: 0; padding: 0; border: 0; outline: none;
+}
+
+html {
+	height: 100%;
+}
+
+body {
+	background: #728eaa;
+	background: -moz-linear-gradient(top, #25303C 0%, #728EAA 100%); /* firefox */	
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#25303C), color-stop(100%,#728EAA)); /* webkit */
+	font-family: sans-serif; 
+}
+
+.login-container{
+	width:700px;
+	height:auto;
+	position: relative;
+	margin: 0 auto;
+}
+.login-form-div{
+	width: 700px;
+	height: auto;
+	position: absolute;
+	background: #c9d0de;
+	margin-top: 30px;
+	padding-bottom: 10px;
+}
+.login-notification{
+	float:left;
+	width:405px;
+	border:solid 1px #AE5B01;
+	margin-left:125px;
+	margin-top: 0px;
+	border-radius:5px;
+	padding:3px;
+	color:#AE5B01;
+	text-align:center;
+	display:none;
+}
+.login-title {
+	color: #445668;
+	text-shadow: 0px 1px 0px #f2f2f2;
+	position: relative;
+	margin:15px 250px;
+	font-size: 30px;
+	font-family: Arial;
+	font-weight: bold;
+
+}
+#login_form{
+	margin-left:100px;
+	margin-top: 50px;
+}
+label {
+	float: left; clear: left; margin: 11px 20px 0 0; width: 120px;
+	text-align: right; font-size: 16px; color: #445668; 
+	text-transform: uppercase; text-shadow: 0px 1px 0px #f2f2f2;
+}
+input {
+	width: 260px; height: 25px; padding: 5px 20px 0px 20px; margin: 0 0 15px 0; 
+	background: #5E768D;
+	background: -moz-linear-gradient(top, #546A7F 0%, #5E768D 20%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#546A7F), color-stop(20%,#5E768D)); /* webkit */
+	border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
+	-moz-box-shadow: 0px 1px 0px #f2f2f2;-webkit-box-shadow: 0px 1px 0px #f2f2f2;
+	font-family: sans-serif; font-size: 16px; color: #f2f2f2;text-shadow: 0px -1px 0px #334f71; 
+}
+input:focus{
+	background: #728eaa;
+	background: -moz-linear-gradient(top, #668099 0%, #728eaa 20%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#668099), color-stop(20%,#728eaa)); /* webkit */
+}
+.login-submit{
+	width:150px;
+	height: 40px;
+}
+.login-submit:hover{
+	cursor: pointer;
+}
+.signup-link:hover{
+	color: #384757;
+	text-decoration: underline;
+}
+.signup-link{
+	margin-left: 20px;
+	text-decoration: none;
+	color: #26313E;
+}
+.forgot_password_btn{
+	float:left;
+	margin-left:140px;
+	color:#425E7A;
+}
+.forgot_password_btn:hover{
+	cursor:pointer;
+}
+.forgot-password{
+	width: 500px;
+	height:250px;
+	margin-left: 100px;
+	margin-top:50px;
+	position: absolute;
+	background:#fff;
+	border:solid 1px #B7BFCD;
+	z-index: 10;
+	border-radius: 5px;
+}
+.forgot-password-title{
+	width:90%;
+	border-bottom:solid 1px #D6D3D3;
+	color:#3B637A;
+	margin-left: 20px;
+	margin-top: 25px;
+	padding-bottom: 10px
+}
+.forgot-password form{
+	margin-left: 20px;
+	margin-top: 35px;
+	text-shadow:none;
+	color: #949596;
+}
+.forgot-password form input{
+	border-radius: 0;
+	background: #fff;
+	border: solid 1px #949596;
+	margin-top: 5px;
+	color: #949596;
+	width:85%;
+
+}
+.password-recover-cancel{
+	width: 100%;
+	height: auto;
+	float: left;
+	margin-top: 40px;
+	border-top:solid 1px #D6D3D3;
+	background: #F3EFEF;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	border-radius: 0px 0px 5px 5px;
+}
+.password-recover-cancel-btn{
+	width: 100px;
+	border-radius: 0;
+	background: #3B637A;
+	border: none;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	color: #fff;
+	float: right;
+	margin-right: 10px;
+}
+.password-recover-cancel-btn:hover{
+	cursor: pointer;
+}
+.password-cancel-btn{
+	background: #9FA1A2;
+}
+.mail_send_successful_div{
+        width:90%;
+        margin-left: 20px;
+        font-size: 12px;
+        font-family: Arial;
+        background: #e78f08;
+        padding: 3px;
+        color:#fff;
+        display: none;
+}

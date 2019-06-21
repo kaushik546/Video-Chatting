@@ -1,0 +1,135 @@
+<html>
+    <head>
+        <title>Video Chatting</title>
+        <link rel="stylesheet" type="text/css" href="../public/jquery-ui-1.10.4.custom/css/ui-lightness/jquery-ui-1.10.4.custom.min.css">
+        <link rel="stylesheet" type="text/css" href="../public/stylesheets/home.css">
+        <script type="text/javascript" src="../public/javascripts/jquery-2.1.0.min.js"></script>
+        <script type="text/javascript" src="../public/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js"></script>
+        <script type="text/javascript" src="../public/javascripts/home.js"></script>
+        
+       
+        
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="container">
+                <div class="left-container">
+                    <div class="header">
+                        <div class="profile-pic">
+                            <img alt="profile picture" width="80" height="80" img src="../public/profile_pictures/default.jpg">
+                        </div>
+                        <div class="profile-name">
+                            None
+                        </div>
+                        <div class="menu">
+                            <div class="friend-request-no">
+                                <div class="friend-request-no-body"></div>
+                                <div class="friend-request-no-arrow"></div>
+                            </div>
+                            <div class="friend-request-send-no">
+                                <div class="friend-request-send-no-body"></div>
+                                <div class="friend-request-send-no-arrow"></div>
+                            </div>
+                            <ul>
+                                <li id="menu-FRS" title="Send request" class="noti-icon noti-icon-out"><img src="../public/images/outbox.png"></li>
+                                <li id="menu-FRR" title="Get request" class="noti-icon noti-icon-in"><img src="../public/images/inbox.png"></li>
+                                <li title="Setting" id="setting-icon"><img src="../public/images/setting.png" width="35" height="32"></li>
+                                <li><a href="/logout" title="Logout"><img src="../public/images/logout.png" width="30" height="29"></a></li>
+                            </ul>
+                        </div>
+                    </div> <!-- header -->
+
+                    <!-- Receive friend request notification -->
+                    <div class="friend-request-popup">
+                        <div class="friend-request-popup-arrow"></div>
+                        <div class="friend-request-popup-body">
+
+                        </div>
+                    </div>
+
+                    <!-- Send friend request notification --> 
+                    <div class="friend-request-send-popup">
+                        <div class="friend-request-send-popup-arrow"></div>
+                        <div class="friend-request-send-popup-body">
+
+                        </div>
+                    </div>
+
+                    <!-- Send friend request dialog -->
+                    <div id="dialog" class="friend-request-dialog-div" title="Search">
+                        <input type="text" size="30" id="search-fnd" name="user_id">
+                        <span id="found-fnd"></span><br>
+                        <button id="add-user-btn" style="display:none">Add</button>
+                    </div>
+
+                    <!-- settings options -->
+                    <div class="settings">
+                        <div class="settings-successful-notification"></div>
+                        <div class="settings-container">
+                            <div class="settings-close-btn" onclick="closeSettingsWindow()"><img src="../public/images/cross.png" width="28" height="28" title="close"></div>
+                            <div class="settings-menu">
+                                <ul>
+                                    <li onclick="changeAccountInfo()">Change account info</li>
+                                    <li onclick="changePassword()">Change password</li>
+                                    <li onclick="setOrChangePhoto()">Set/Change photo</li>
+                                </ul>
+                                <a href="deactive_account" class="deactive-account">Deactive account</a>
+                            </div>
+                            <div class="settings-body"></div>
+                        </div>
+                    </div>
+                    <div>
+                    <!-- show video -->
+                    <div class="show_video">
+                        <div id="container" ondblclick="enterFullScreen()"> 
+                            <div id="card">                                
+                                <div id="remote" width="100%" height="100%" >
+                                </div>
+                                <div id="local">
+                                    <video id="localVideo" class ="mini" autoplay="true">
+                                    </video>
+                                </div>
+                            </div>
+                        </div>
+<!--                        <div style="min-height: 3px;background: "></div>
+                         <div id="chat" style="clear:both;">
+                                <div id="chatHistory" style="display:none;border:1px dotted black;max-height: 100px;overflow: auto;"></div>
+                                <textarea id="chatInput" style="display:none;" rows="3" cols="50" ></textarea>
+                            </div>-->
+                    </div>
+                    <div style="min-height: 3px;background:#ffffff "></div>
+                    <div id="chat" style="float: right;width: 177px;">
+                        <ul id="chatHistory" style="display: none;border:1px solid #CCC;height: 349px;overflow-y: auto;width: 173px;"></ul>
+                        <textarea id="chatInput" style="display: none;width: 175px;" rows="5" cols=""  ></textarea>
+                        <!--<input type="button" id="sendMessageBtn" sendBtn="true" style="display: none" >-->
+                    </div>
+                    </div><!--main container-->
+                    <!-- caller and calling popup -->
+                    <div class="caller-popup"></div>
+                    <div class="calling-popup"><span class="called-from"></span><br><button id="call-accept-btn" class="call-btn" onclick="incomingCallAccept()">Accept</button><button id="call-cancel-btn" class="call-btn" onclick="incomingCallCancel()">Cancel</button></div>
+                    <audio loop id="caller-tone"><source src="../public/sounds/caller.mp3" type="audio/mpeg"></audio>	
+                    <audio loop id="calling-tone"><source src="../public/sounds/calling.mp3" type="audio/mpeg"></audio>
+
+                </div> <!-- left container -->
+
+                <div class="right-container">
+                    <button class="add-new-btn">Add New Friend</button>
+                    <div class="fnd-totals">
+                        Friends<br><!--(<span id="online_friends_number">0</span>/<span id="total_friends_number"></span>)-->
+                    </div>
+                    <!--<button class="popup-btn" id="popup-btn-total-fnd"></button>-->
+                    <div class="popup-list" id="popup-list-total-fnd">
+
+                    </div>
+                </div> 
+
+            </div>
+            <div class="footer">
+                Kaushik
+            </div> <!-- footer -->
+        </div> <!-- wrapper -->
+
+        
+
+    </body>
+</html>
