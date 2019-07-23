@@ -1,14 +1,27 @@
 <html>
     <head>
-        <title>Video Chatting</title>
-        <link rel="stylesheet" type="text/css" href="../public/jquery-ui-1.10.4.custom/css/ui-lightness/jquery-ui-1.10.4.custom.min.css">
-        <link rel="stylesheet" type="text/css" href="../public/stylesheets/home.css">
-        <script type="text/javascript" src="../public/javascripts/jquery-2.1.0.min.js"></script>
-        <script type="text/javascript" src="../public/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js"></script>
-        <script type="text/javascript" src="../public/javascripts/home.js"></script>
-        
-       
-        
+        <title>KCL Video Chat</title>
+        <link rel="stylesheet" type="text/css" href="/jquery-ui-1.10.4.custom/css/ui-lightness/jquery-ui-1.10.4.custom.min.css">
+        <link rel="stylesheet" type="text/css" href="/stylesheets/home.css">
+        <script type="text/javascript" src="/javascripts/jquery-2.1.0.min.js"></script>
+        <script type="text/javascript" src="/jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js"></script>
+        <script type="text/javascript" src="/javascripts/home.js"></script>
+        <script type="text/javascript" src="/javascripts/adapter.js"></script>
+        <script type="text/javascript" src="/javascripts/client.js"></script>
+        <script type="text/javascript" src="socket.io/socket.io.js"></script>
+        <!--<script type="text/javascript" src="/javascripts/commonFunctions.js"></script>-->
+        <script>
+            function closeIt()
+            {
+                if (socket != null && socket != 'undefined') {
+                    alert('callled socket emit');
+                    socket.close();
+                }
+                return "Are you sure you want to leave this page? \n";
+
+            }
+            // window.onbeforeunload =  closeBeforeUnload;
+        </script>
     </head>
     <body>
         <div class="wrapper">
@@ -16,7 +29,7 @@
                 <div class="left-container">
                     <div class="header">
                         <div class="profile-pic">
-                            <img alt="profile picture" width="80" height="80" img src="../public/profile_pictures/default.jpg">
+                            <img alt="profile picture" width="80" height="80">
                         </div>
                         <div class="profile-name">
                             None
@@ -31,10 +44,10 @@
                                 <div class="friend-request-send-no-arrow"></div>
                             </div>
                             <ul>
-                                <li id="menu-FRS" title="Send request" class="noti-icon noti-icon-out"><img src="../public/images/outbox.png"></li>
-                                <li id="menu-FRR" title="Get request" class="noti-icon noti-icon-in"><img src="../public/images/inbox.png"></li>
-                                <li title="Setting" id="setting-icon"><img src="../public/images/setting.png" width="35" height="32"></li>
-                                <li><a href="/logout" title="Logout"><img src="../public/images/logout.png" width="30" height="29"></a></li>
+                                <li id="menu-FRS" title="Send request" class="noti-icon noti-icon-out"><img src="/images/outbox.png"></li>
+                                <li id="menu-FRR" title="Get request" class="noti-icon noti-icon-in"><img src="/images/inbox.png"></li>
+                                <li title="Setting" id="setting-icon"><img src="/images/setting.png" width="35" height="32"></li>
+                                <li><a href="/logout" title="Logout"><img src="/images/logout.png" width="30" height="29"></a></li>
                             </ul>
                         </div>
                     </div> <!-- header -->
@@ -66,7 +79,7 @@
                     <div class="settings">
                         <div class="settings-successful-notification"></div>
                         <div class="settings-container">
-                            <div class="settings-close-btn" onclick="closeSettingsWindow()"><img src="../public/images/cross.png" width="28" height="28" title="close"></div>
+                            <div class="settings-close-btn" onclick="closeSettingsWindow()"><img src="/images/cross.png" width="28" height="28" title="close"></div>
                             <div class="settings-menu">
                                 <ul>
                                     <li onclick="changeAccountInfo()">Change account info</li>
@@ -97,7 +110,7 @@
                                 <textarea id="chatInput" style="display:none;" rows="3" cols="50" ></textarea>
                             </div>-->
                     </div>
-                    <div style="min-height: 3px;background:#ffffff "></div>
+                    <div style="min-height: 3px;background: "></div>
                     <div id="chat" style="float: right;width: 177px;">
                         <ul id="chatHistory" style="display: none;border:1px solid #CCC;height: 349px;overflow-y: auto;width: 173px;"></ul>
                         <textarea id="chatInput" style="display: none;width: 175px;" rows="5" cols=""  ></textarea>
@@ -107,8 +120,8 @@
                     <!-- caller and calling popup -->
                     <div class="caller-popup"></div>
                     <div class="calling-popup"><span class="called-from"></span><br><button id="call-accept-btn" class="call-btn" onclick="incomingCallAccept()">Accept</button><button id="call-cancel-btn" class="call-btn" onclick="incomingCallCancel()">Cancel</button></div>
-                    <audio loop id="caller-tone"><source src="../public/sounds/caller.mp3" type="audio/mpeg"></audio>	
-                    <audio loop id="calling-tone"><source src="../public/sounds/calling.mp3" type="audio/mpeg"></audio>
+                    <audio loop id="caller-tone"><source src="/sounds/caller.mp3" type="audio/mpeg"></audio>	
+                    <audio loop id="calling-tone"><source src="/sounds/calling.mp3" type="audio/mpeg"></audio>
 
                 </div> <!-- left container -->
 
@@ -125,11 +138,536 @@
 
             </div>
             <div class="footer">
-                Kaushik
+                Kaushik @ 2016
             </div> <!-- footer -->
         </div> <!-- wrapper -->
 
-        
+        <script type="text/javascript">
 
+            $(".profile-name").html(<%- JSON.stringify(profile_name) %>);
+            var profile_picture = <%- JSON.stringify(profile_picture) %>;
+            if(profile_picture != 'undefined' && profile_picture != null)
+                $(".profile-pic img").attr("src","/profile_pictures/" + profile_picture);
+            else
+                $(".profile-pic img").attr("src","/profile_pictures/default.jpg");
+            myIdentity = <%- JSON.stringify(profile_id) %>;
+            req_in = <%- JSON.stringify(req_in) %>;
+            req_out = <%- JSON.stringify(req_out) %>;
+            var friends = <%- JSON.stringify(friends) %>;
+
+            // friend request number
+            if (req_in == null)
+                var req_in_no = 0;
+            else
+                var req_in_no = req_in.length;
+            if (req_in_no == 0) {
+                $(".friend-request-no-body").css("display", "none");
+                $(".friend-request-no-arrow").css("display", "none");
+            }
+            else {
+                $(".friend-request-no-body").html(req_in_no);
+                $(".noti-icon-in").css("opacity", "1");
+            }
+            if (req_out === null)
+                var req_out_no = 0;
+            else
+                var req_out_no = req_out.length;
+            if (req_out_no === 0) {
+                $(".friend-request-send-no-body").css("display", "none");
+                $(".friend-request-send-no-arrow").css("display", "none");
+            }
+            else {
+                $(".friend-request-send-no-body").html(req_out_no);
+                $(".noti-icon-out").css("opacity", "1");
+            }
+            // show friend number and friends
+            if (friends.length === 0)
+                //var friends_no = 0;
+                console.log("No friend");
+            else {
+                var friends_no = friends.length;
+                //$("#total_friends_number").html(friends_no);
+                $.ajax({
+                    url: "get_fullname_for_friend_request",
+                    type: "GET",
+                    data: {"req_id": friends},
+                    success: function(allfnds) {
+                        for (var i = 0; i < allfnds.rows.length; i++) {
+                            $("#popup-list-total-fnd").append(
+                                    '<div id="' + allfnds.rows[i].id + '"  class="popup-list-friend-div">' +
+                                    '<button class="popup-list-single-fnd">' + allfnds.rows[i].value +
+                                    '<div class="online-status"></div>' +
+                                    '</button>' +
+                                    '<ul class="operation-list ' + allfnds.rows[i].id + '" style="display:none">' +
+                                    '<li class="video-btn ' + allfnds.rows[i].id + '" peerIdentity="' + allfnds.rows[i].id + '" >Video Call</li>' +
+                                    '<li class="video-close-btn ' + allfnds.rows[i].id + '" peerIdentity="' + allfnds.rows[i].id + '" style="display:none" >End Call</li>' +
+//                                             '<li class="call-btn '+allfnds.rows[i].id+'" peerIdentity="'+allfnds.rows[i].id+'" >Call</li>'+
+//                                            '<li id="chat-btn" peerIdentity="'+allfnds.rows[i].id+'" class="'+allfnds.rows[i].id+'">Chat</li>'+
+                                    '</ul>' +
+                                    '</div>'
+                                    );
+                        }
+                    }
+                });
+            }
+
+            // video calling
+            var peerIdentity;
+            $('.caller-popup, .calling-popup').draggable({
+                containment: '.wrapper',
+                cursor: 'move'
+            });
+            $("#popup-list-total-fnd").on("click", ".video-btn", function() {
+                _isCaller = true;
+                peerIdentity = $(this).attr("peerIdentity");
+                //$(".caller-popup").fadeIn("fast").html(peerIdentity + " calling...");
+                $(".caller-popup").fadeIn("fast").html(
+                      'calling ' + peerIdentity + '...' + '<br><button id="call-cancel-btn" class="call-btn" onclick="outGoingCallCancel()">End Call</button>'                      
+                    );
+                // $("#caller-tone").get(0).play();
+                sendIOMessage({'type': "calling"}, peerIdentity);
+                console.log('calling to ' + peerIdentity);
+            });
+
+            //search friend request
+           // $("#add-user-btn").attr("disabled", "disabled");
+            $("#search-fnd").keyup(function() {
+                var fnd = $(this).val();
+                if (fnd.match(/^\s*$/)) {
+                    $("#found-fnd").text("Please type user name");
+                  //  $("#add-user-btn").attr("disabled", "disabled");
+                }
+                else {
+                    $.ajax({
+                        url: "search_fnd",
+                        type: "GET",
+                        data: {"user_id": $(this).val(), "myIdentity": myIdentity},
+                        success: function(result) {
+                               $("#found-fnd").text(result);
+                            if ( (result == 'Not found!') || (result == 'Already friend') || (result == 'Request already sent') || (result == 'Request already come')){
+                                $("#add-user-btn").hide();
+                            }else{
+                                 $("#add-user-btn").show();
+                            }
+                        }
+                    });
+                }
+            });
+
+            // send friend request--------------------
+            $("#add-user-btn").click(function() {
+                var fnd_id = $("#search-fnd").val();
+                $.ajax({
+                    url: "/friend_request",
+                    type: "GET",
+                    data: {"myIdentity": myIdentity, "fnd_id": fnd_id},
+                    success: function(req_out) {
+                        $("#dialog").dialog("close");
+                        if (req_out === null)
+                            var req_out_no = 0;
+                        else
+                            var req_out_no = req_out.length;
+                        if (req_out_no === 0) {
+                            $(".friend-request-send-no-body").css("display", "none");
+                            $(".friend-request-send-no-arrow").css("display", "none");
+                        }
+                        else {
+                            $(".friend-request-send-no-body").css("display", "block");
+                            $(".friend-request-send-no-arrow").css("display", "block");
+                            $(".friend-request-send-no-body").html(req_out_no);
+                            $(".noti-icon-out").css("opacity", "1");
+                        }
+                        if (req_out_no == 0)
+                            $(".friend-request-send-popup-body").html('<div class="friend-request"><span id="requested-name">No request send</span></div>');
+                        else {
+                            $.ajax({
+                                url: "get_fullname_for_friend_request",
+                                type: "GET",
+                                data: {"req_id": req_out},
+                                success: function(allName) {
+                                    $(".friend-request-send-popup").hide();
+                                    $(".friend-request-send-popup-body").empty();
+                                    for (var i = 0; i < allName.rows.length; i++)
+                                        $(".friend-request-send-popup-body").append('<div class="friend-request"><span id="requested-name">' + allName.rows[i].value + '</span><br><button class="friend-request-btn friend-request-send-cancel-btn" request_id="' + allName.rows[i].key + '">Cancel request</button></div>');
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+
+            // show requested friend, accept request and cancel request
+            $(".friend-request-popup").hide();
+            if (req_in_no == 0)
+                $(".friend-request-popup-body").html('<div class="friend-request"><span id="requested-name">No request come</span></div>');
+            else {
+                $.ajax({
+                    url: "get_fullname_for_friend_request",
+                    type: "GET",
+                    data: {"req_id": req_in},
+                    success: function(allName) {
+                        for (var i = 0; i < allName.rows.length; i++)
+                            $(".friend-request-popup-body").append('<div class="friend-request"><span id="requested-name">' + allName.rows[i].value + '</span><br><button class="friend-request-btn friend-request-accept-btn" request_id="' + allName.rows[i].key + '">Accept</button><button class="friend-request-btn friend-request-cancel-btn" request_id="' + allName.rows[i].key + '">Cancel</button></div>');
+                    }
+                });
+            }
+
+            $("#menu-FRR").click(function() {
+                $.ajax({
+                    url: "check_session",
+                    type: "GET",
+                    success: function(session_status) {
+                        if (session_status == "y") {
+                            $(".settings, .friend-request-send-popup").hide();
+                            $(".friend-request-popup").toggle("fast");
+                        }
+                        else if (session_status == "n") {
+                            window.location = "login";
+                        }
+                    }
+                });
+            });
+
+            //accept friend request
+            $(".friend-request-popup-body").on("click", ".friend-request-accept-btn", function() {
+                var attr = $(this).attr("request_id");
+                $.ajax({
+                    url: "friend_request_accept",
+                    type: "GET",
+                    dataType:"JSON",
+                    data: {"myIdentity": myIdentity, "requested_fnd_id": $(this).attr("request_id")},
+                    success: function(requestResponse) {
+                        $(".friend-request-accept-btn[request_id=" + attr + "]").html("Accepted").css("color", "#fff");
+                        req_in = requestResponse.reqIn;
+                        if (req_in === null)
+                            var req_in_no = 0;
+                        else
+                            var req_in_no = req_in.length;
+                        console.log(req_in_no);
+                        if (req_in_no === 0) {
+                            $(".friend-request-no-body").css("display", "none");
+                            $(".friend-request-no-arrow").css("display", "none");
+                            $(".noti-icon-in").css("opacity", ".3");
+                            $(".friend-request-popup-body").html('<div class="friend-request"><span id="requested-name">No request come</span></div>');
+                        }
+                        else {
+                            $(".friend-request-no-arrow").css("display", "block");
+                            $(".friend-request-no-body").css("display", "block").html(req_in_no);
+                            $(".noti-icon-in").css("opacity", "1");
+                            $.ajax({
+                                url: "get_fullname_for_friend_request",
+                                type: "GET",
+                                data: {"req_id": req_in},
+                                success: function(allName) {
+                                    $(".friend-request-popup-body").html('');
+                                    for (var i = 0; i < allName.rows.length; i++)
+                                        $(".friend-request-popup-body").append('<div class="friend-request"><span id="requested-name">' + allName.rows[i].value + '</span><br><button class="friend-request-btn friend-request-accept-btn" request_id="' + allName.rows[i].key + '">Accept</button><button class="friend-request-btn friend-request-cancel-btn" request_id="' + allName.rows[i].key + '">Cancel</button></div>');
+                                }
+                            });
+                        }
+                        var fndArray = new Array();
+                        fndArray.push(attr);
+                        $.ajax({
+                            url: "get_fullname_for_friend_request",
+                            type: "GET",
+                            data: {"req_id":fndArray },
+                            success: function(allfnds) {
+                                    $("#popup-list-total-fnd").append(
+                                        '<div id="' + allfnds.rows[0].id + '"  class="popup-list-friend-div">' +
+                                        '<button class="popup-list-single-fnd">' + allfnds.rows[0].value +
+                                        '<div class="online-status '+requestResponse.recentJoinFriendStatus+'"></div>' +
+                                        '</button>' +
+                                        '<ul class="operation-list ' + allfnds.rows[0].id + '" style="display:'+requestResponse.operationListStatus+'">' +
+                                        '<li class="video-btn ' + allfnds.rows[0].id + '" peerIdentity="' + allfnds.rows[0].id + '" >Video Call</li>' +
+                                        '<li class="video-close-btn ' + allfnds.rows[0].id + '" peerIdentity="' + allfnds.rows[0].id + '" style="display:none" >End Call</li>' +
+        //                                             '<li class="call-btn '+allfnds.rows[i].id+'" peerIdentity="'+allfnds.rows[i].id+'" >Call</li>'+
+        //                                            '<li id="chat-btn" peerIdentity="'+allfnds.rows[i].id+'" class="'+allfnds.rows[i].id+'">Chat</li>'+
+                                        '</ul>' +
+                                        '</div>'
+                                     );
+
+                            }
+                        });
+                        
+                    }
+                });
+            });
+
+            //cancel friend request
+            $(".friend-request-popup-body").on("click", ".friend-request-cancel-btn", function() {
+                var attr = $(this).attr("request_id");
+                $.ajax({
+                    url: "friend_request_cancel",
+                    type: "GET",
+                    data: {"myIdentity": myIdentity, "requested_fnd_id": $(this).attr("request_id")},
+                    success: function(requestNumber) {
+                        $(".friend-request-cancel-btn[request_id=" + attr + "]").html("Canceled").css("color", "#FE0808");
+                        req_in = requestNumber;
+                        if (req_in === null)
+                            var req_in_no = 0;
+                        else
+                            var req_in_no = req_in.length;
+                        console.log(req_in_no);
+                        if (req_in_no === 0) {
+                            $(".friend-request-no-body").css("display", "none");
+                            $(".friend-request-no-arrow").css("display", "none");
+                            $(".noti-icon-in").css("opacity", ".3");
+                            $(".friend-request-popup-body").html('<div class="friend-request"><span id="requested-name">No request come</span></div>');
+                        }
+                        else {
+                            $(".friend-request-no-arrow").css("display", "block");
+                            $(".friend-request-no-body").css("display", "block").html(req_in_no);
+                            $(".noti-icon-in").css("opacity", "1");
+                            $.ajax({
+                                url: "get_fullname_for_friend_request",
+                                type: "GET",
+                                data: {"req_id": req_in},
+                                success: function(allName) {
+                                    $(".friend-request-popup-body").html('');
+                                    for (var i = 0; i < allName.rows.length; i++)
+                                        $(".friend-request-popup-body").append('<div class="friend-request"><span id="requested-name">' + allName.rows[i].value + '</span><br><button class="friend-request-btn friend-request-accept-btn" request_id="' + allName.rows[i].key + '">Accept</button><button class="friend-request-btn friend-request-cancel-btn" request_id="' + allName.rows[i].key + '">Cancel</button></div>');
+                                }
+                            });
+                        }
+                      }
+                });
+            });
+
+            // send request popup
+            $(".friend-request-send-popup").hide();
+            if (req_out_no == 0)
+                $(".friend-request-send-popup-body").html('<div class="friend-request"><span id="requested-name">No request send</span></div>');
+            else {
+                $.ajax({
+                    url: "get_fullname_for_friend_request",
+                    type: "GET",
+                    data: {"req_id": req_out},
+                    success: function(allName) {
+                        for (var i = 0; i < allName.rows.length; i++)
+                            $(".friend-request-send-popup-body").append('<div class="friend-request"><span id="requested-name">' + allName.rows[i].value + '</span><br><button class="friend-request-btn friend-request-send-cancel-btn" request_id="' + allName.rows[i].key + '">Cancel request</button></div>');
+                }
+                });
+            }
+            $("#menu-FRS").click(function() {
+                $.ajax({
+                    url: "check_session",
+                    type: "GET",
+                    success: function(session_status) {
+                        if (session_status == "y") {
+                            $(".settings, .friend-request-popup").hide();
+                            $(".friend-request-send-popup").toggle("fast");
+                        }
+                        else if (session_status == "n") {
+                            window.location = "login";
+                        }
+                    }
+                });
+            });
+
+            $(".friend-request-send-popup-body").on("click", ".friend-request-send-cancel-btn", function() {
+                var attr = $(this).attr("request_id");
+                $.ajax({
+                    url: "friend_request_send_cancel",
+                    type: "GET",
+                    data: {"myIdentity": myIdentity, "requested_to_fnd_id": $(this).attr("request_id")},
+                    success: function(req_out) {
+                        $(".friend-request-send-cancel-btn[request_id=" + attr + "]").html("Canceled").css("color", "#FE0808");
+                        if (req_out === null)
+                            var req_out_no = 0;
+                        else
+                            var req_out_no = req_out.length;
+                        if (req_out_no === 0) {
+                            $(".friend-request-send-no-body").css("display", "none");
+                            $(".friend-request-send-no-arrow").css("display", "none");
+                            $(".noti-icon-out").css("opacity", ".3");
+                        }
+                        else {
+                            $(".friend-request-send-no-body").css("display", "block");
+                            $(".friend-request-send-no-arrow").css("display", "block");
+                            $(".friend-request-send-no-body").html(req_out_no);
+                            $(".noti-icon-out").css("opacity", "1");
+                        }
+                        if (req_out_no == 0)
+                            $(".friend-request-send-popup-body").html('<div class="friend-request"><span id="requested-name">No request send</span></div>');
+                        else {
+                            $.ajax({
+                                url: "get_fullname_for_friend_request",
+                                type: "GET",
+                                data: {"req_id": req_out},
+                                success: function(allName) {
+                                    $(".friend-request-send-popup").hide();
+                                    $(".friend-request-send-popup-body").empty();
+                                    for (var i = 0; i < allName.rows.length; i++)
+                                        $(".friend-request-send-popup-body").append('<div class="friend-request"><span id="requested-name">' + allName.rows[i].value + '</span><br><button class="friend-request-btn friend-request-send-cancel-btn" request_id="' + allName.rows[i].key + '">Cancel request</button></div>');
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+
+            // show and hide total friend and online friend
+            //$("#popup-list-total-fnd").hide();
+            /*
+             $("#popup-btn-total-fnd").click(function(){
+             $.ajax({
+             url:"check_session",
+             type:"GET",
+             success:function(session_status){
+             if(session_status == "y"){
+             $("#popup-list-total-fnd").toggle("fast");
+             }
+             else if(session_status == "n"){
+             window.location="login";
+             }
+             }
+             });
+             
+             });*/
+
+            // settings
+            $(".settings").hide();
+            $("#setting-icon").click(function() {
+                $.ajax({
+                    url: "check_session",
+                    type: "GET",
+                    success: function(session_status) {
+                        if (session_status == "y") {
+                            $(".friend-request-popup,.friend-request-send-popup").hide();
+                            $(".settings").toggle();
+                        }
+                        else if (session_status == "n") {
+                            window.location = "login";
+                        }
+                    }
+                });
+            });
+
+            function changeAccountInfo() {
+                $.ajax({
+                    url: "get_account_info_for_update",
+                    type: "GET",
+                    success: function(result) {
+                        $(".settings-body").html(
+                                '<form class="settings-form" id="submit_change_account_info">' +
+                                'Full name:<br>' +
+                                '<input type="text" size="30" name="fullName" class="settings-text-fld" value="' + result.name + '"><br><br>' +
+                                'Email:<br>' +
+                                '<input type="text" size="30" name="email" class="settings-text-fld" value="' + result.email + '"><br><br>' +
+                                'Skype name:<br>' +
+                                '<input type="text" size="30" name="skype" class="settings-text-fld" value="' + result.skype + '"><br><br>' +
+                                '<input type="submit" value="Change" class="settings-submit-btn">' +
+                                '</form>'
+                                );
+                    }
+                });
+            }
+            $(".settings-body").on("submit", "#submit_change_account_info", function(event) {
+                event.preventDefault();
+                $.ajax({
+                    url: "save_account_info_for_update",
+                    type: "GET",
+                    data: $(this).serializeArray(),
+                    success: function(result) {
+                        $(".settings-successful-notification").show().html(result);
+                        setTimeout(function() {
+                            window.location = " ";
+                        }, 3000);
+
+                    }
+                });
+            });
+
+            function changePassword() {
+                $(".settings-body").html(
+                        '<form class="settings-form" id="submit_change_password">' +
+                        'Enter new password:<br>' +
+                        '<input type="password" size="30" name="new_pass" class="settings-text-fld" id="settings_new_pass"><br><br>' +
+                        'Re-enter new password:<br>' +
+                        '<input type="password" size="30" name="new_repass" class="settings-text-fld" id="settings_new_repass"><br><br>' +
+                        '<input type="submit" value="Change" class="settings-submit-btn">' +
+                        '</form>'
+                        );
+            }
+            $(".settings-body").on("submit", "#submit_change_password", function(event) {
+                event.preventDefault();
+                var new_pass = $("#settings_new_pass").val();
+                var new_repass = $("#settings_new_repass").val();
+                if(new_pass.length >= 7){
+                    if (new_pass === new_repass) {
+                        $.ajax({
+                            url: "save_password_for_update",
+                            type: "GET",
+                            data: $(this).serializeArray(),
+                            success: function(result) {
+                                $(".settings-successful-notification").show().html(result);
+                                setTimeout(function() {
+                                    window.location = " ";
+                                }, 3000);
+                            }
+                        });
+                    }
+                    else {
+                        $(".settings-successful-notification").show().html("Password does not match !");
+                        setTimeout(function() {
+                            $(".settings-successful-notification").hide();
+                        }, 2000);
+                    }
+                }
+                else{
+                    $(".settings-successful-notification").show().html("Please enter at least 7 characters");
+                    setTimeout(function() {
+                        $(".settings-successful-notification").hide();
+                    }, 2000);
+                }
+            });
+
+            function setOrChangePhoto() {
+                $(".settings-body").html(
+                        '<form class="settings-form" id="submit-profile-pic" enctype="multipart/form-data" action="save_profile_pic" method="post">' +
+                        'Choose photo:<br><br>' +
+                        '<input type="file" name="profile_picture" class="setting-file-fld"><br><br>' +
+                        '<input type="submit" value="Set" class="settings-submit-btn">' +
+                        '</form>' +
+                        '<div class="show-upload-pic">' +
+                        '</div>'
+                        );
+            }
+
+            function closeSettingsWindow() {
+                $(".settings").hide();
+            }
+
+
+            // web rtc
+            $(document).ready(function() {
+                console.log('home openChannel called ');
+                openChannel();
+            });
+            function closeBeforeUnload() {
+              console.log('calling close befoer unload');
+                if (socket != null && socket != 'undefined') {
+                  console.log('got socket', socket);
+                    for(var i = 0; i < peersArray.length;i++){
+                     console.log('in for');
+                        socket.emit('message', JSON.stringify({'type' : 'closeConnection', 'senderID': myIdentity,'receiverID':peersArray[i].MyPeerID}));
+                    }
+                }
+                //return false;
+            }
+            window.onbeforeunload = closeBeforeUnload;
+            window.onunload = function() {
+                if (socket != null && socket != 'undefined') {
+                    //console.log('got socket', socket);
+                    socket.emit('message', JSON.stringify({'type': 'bye', 'senderID': myIdentity}));
+                   } 
+                }
+//            $(document).ready(function(){
+//                if (socket != null && socket != 'undefined') {
+//                
+//                }
+//                });
+                
+        </script>
     </body>
 </html>

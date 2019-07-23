@@ -1,8 +1,8 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<script type="text/javascript" src="../public/javascripts/jquery-2.1.0.min.js"></script> 
-	<link rel="stylesheet" type="text/css" href="../public/stylesheets/login.css">
+	<script type="text/javascript" src="/javascripts/jquery-2.1.0.min.js"></script> 
+	<link rel="stylesheet" type="text/css" href="/stylesheets/login.css">
 	<title>login</title>
 </head>
 <body>
@@ -14,7 +14,7 @@
 			<label>User Name:</label><input type="text" size="25" name="userName"><br><br>
 			<label>Password:</label><input type="password" size="25" name="password"><br>
 			<div class="forgot_password_btn" onclick="showForgotPasswordPanel()">Forgot your password ?</div><br><br>
-			<input type="submit" value="Login" class="login-submit" style="margin-left:140px;"><a href="signup.html" class="signup-link">Sign Up</a>
+			<input type="submit" value="Login" class="login-submit" style="margin-left:140px;"><a href="signup" class="signup-link">Sign Up</a>
 		</form>
 	</div>
 	<div class="forgot-password">
@@ -35,8 +35,27 @@
 		$(document).ready(function(){
                     // submit login form
                     $(".forgot-password").hide();
-                    
-                   
+                    $("#login_form").submit(function(event){
+                        event.preventDefault();
+                        var loginData = $(this).serializeArray(); 
+                        $.ajax({
+                            url:"authen",
+                            type:"GET",
+                            data:loginData,
+                            success:function(status){
+                                if(status == 'authenticated'){
+                                        window.location="home";
+                                }
+                                else{
+                                        $(".login-notification").css({"display":"block","padding":"5px"}).html(status);
+                                        setTimeout(function(){
+                                                $(".login-notification").fadeOut("fast");
+                                        },3000);
+
+                                }
+                            }
+                        });
+                    });
 			
 		});
 
@@ -49,7 +68,31 @@
 			$(".forgot-password").hide();
                         window.location="";
 		}
-		
+		function recover_password(){
+			var recover_user = $("#password-recover-text-fld").val();
+			var pass_gen ="";
+			for(var i=0;i<7;i++){
+				var num = Math.floor(Math.random()*90)+1;
+				if(num >= 65)
+					pass_gen = pass_gen.concat(String.fromCharCode(num));
+				if(num < 65 && num > 9)
+					pass_gen = pass_gen.concat(Math.floor(num/10));
+				if(num < 10)
+					pass_gen = pass_gen.concat(num);
+			}
+                        if(recover_user == '')
+                            $(".mail_send_successful_div").show().html('Field is empty');
+                        else{
+                            $.ajax({
+                                    url:"recover_password",
+                                    type:"GET",
+                                    data:{"recover_user":recover_user,"recover_pass":pass_gen},
+                                    success:function(result){
+                                        $(".mail_send_successful_div").show().html(result);
+                                    }
+                            });
+                        }
+		}
 
 	</script>
 </body>
